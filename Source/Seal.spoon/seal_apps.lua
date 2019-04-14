@@ -30,7 +30,7 @@ obj.appSearchPaths = {
 
 local modifyNameMap = function(info, add)
    for _, item in ipairs(info) do
-      icon = nil
+      local icon = nil
       local displayname = item.kMDItemDisplayName or hs.fs.displayName(item.kMDItemPath)
       displayname = displayname:gsub("%.app$", "", 1)
       if string.find(item.kMDItemPath, "%.prefPane$") then
@@ -40,7 +40,7 @@ local modifyNameMap = function(info, add)
          end
       end
       if add then
-         bundleID = item.kMDItemCFBundleIdentifier
+         local bundleID = item.kMDItemCFBundleIdentifier
          if (not icon) and (bundleID) then
            icon = hs.image.imageFromAppBundle(bundleID)
          end

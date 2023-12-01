@@ -18,6 +18,8 @@ obj.circle = nil
 obj.timer = nil
 obj.hotkey = nil
 
+obj.dia = 80
+
 --- MouseCircle.color
 --- Variable
 --- An `hs.drawing.color` table defining the colour of the circle. Defaults to red.
@@ -53,6 +55,7 @@ end
 function obj:show()
     local circle = self.circle
     local timer = self.timer
+    local dia = obj.dia
 
     if circle then
         circle:hide(0.5)
@@ -69,17 +72,34 @@ function obj:show()
     else
         color = {["red"]=1,["blue"]=0,["green"]=0,["alpha"]=1}
     end
-    circle = hs.drawing.circle(hs.geometry.rect(mousepoint.x-40, mousepoint.y-40, 80, 80))
+    circle = hs.drawing.circle(hs.geometry.rect(mousepoint.x-dia/2, mousepoint.y-dia/2, dia, dia))
     circle:setStrokeColor(color)
     circle:setFill(false)
     circle:setStrokeWidth(5)
     circle:bringToFront(true)
-    circle:show(0.5)
+
     self.circle = circle
 
+    self.pulsetimer = hs.timer.doEvery(0.4, function()
+        if self.circle then
+            self.circle:show(0.1)
+            hs.timer.doAfter(0.15, function()
+                if self.circle then self.circle:hide(0.1) end
+            end)
+        end
+    end)
+
     self.timer = hs.timer.doAfter(3, function()
-        self.circle:hide(0.5)
-        hs.timer.doAfter(0.6, function() self.circle:delete() self.circle = nil end)
+        if self.circle then self.circle:hide(0.1) end
+        if self.pulsetimer then self.pulsetimer:stop() end
+        hs.timer.doAfter(0.15, function()
+            if self.circle then
+                self.circle:delete()
+                self.circle = nil
+            end
+            if self.pulsetimer then self.pulsetimer = nil end
+            if self.timer then self.timer = nil end
+        end)
     end)
 
     return self

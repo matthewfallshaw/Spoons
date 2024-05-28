@@ -90,7 +90,7 @@ function obj:show()
         type = "circle",
         action = "stroke",
         strokeWidth = strokeWidth,
-        strokeColour = obj.colour,
+        strokeColor = obj.colour,
         padding = halfStroke
     }):level(hs.canvas.windowLevels.cursor)
 
